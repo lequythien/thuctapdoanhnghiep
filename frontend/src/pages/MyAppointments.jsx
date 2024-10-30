@@ -9,6 +9,7 @@ const MyAppointments = () => {
   const { backendUrl, token, getDoctorsData } = useContext(AppContext)
 
   const [appointments, setAppointments] = useState([])
+  const [showAll, setShowAll] = useState(false)  // State quản lý chế độ hiển thị
 
   const months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
@@ -20,26 +21,26 @@ const MyAppointments = () => {
   const navigate = useNavigate()
 
   const getUserAppointments = async () => {
-    try {
 
-      const { data } = await axios.get(backendUrl + '/api/user/appointments', { headers: { token } })
+    try {
+      const { data } = await axios.get(`${backendUrl}/api/user/appointments`, { headers: { token } })
 
       if (data.success) {
         setAppointments(data.appointments.reverse())
-        console.log(data.appointments);
+        console.log(data.appointments)
       }
 
     } catch (error) {
       console.log(error)
       toast.error(error.message)
     }
+
   }
 
   const cancelAppointment = async (appointmentId) => {
 
     try {
-
-      const { data } = await axios.post(backendUrl + '/api/user/cancel-appointment', { appointmentId }, { headers: { token } })
+      const { data } = await axios.post(`${backendUrl}/api/user/cancel-appointment`, { appointmentId }, { headers: { token } })
       if (data.success) {
         toast.success(data.message)
         getUserAppointments()
@@ -69,8 +70,7 @@ const MyAppointments = () => {
         console.log(response)
 
         try {
-
-          const { data } = await axios.post(backendUrl + '/api/user/verifyRazorpay', response, { headers: { token } })
+          const { data } = await axios.post(`${backendUrl}/api/user/verifyRazorpay`, response, { headers: { token } })
           if (data.success) {
             getUserAppointments()
             navigate('/my-appointments')
@@ -81,9 +81,10 @@ const MyAppointments = () => {
           toast.error(error.message)
         }
 
-
       }
+
     }
+
 
     const rzp = new window.Razorpay(options)
     rzp.open()
@@ -93,15 +94,13 @@ const MyAppointments = () => {
   const appointmentRazorpay = async (appointmentId) => {
 
     try {
-
-      const { data } = await axios.post(backendUrl + '/api/user/payment-razorpay', { appointmentId }, { headers: { token } })
-
+      const { data } = await axios.post(`${backendUrl}/api/user/payment-razorpay`, { appointmentId }, { headers: { token } })
       if (data.success) {
         initPay(data.order)
       }
 
     } catch (error) {
-
+      console.log(error)
     }
 
   }
@@ -116,8 +115,8 @@ const MyAppointments = () => {
     <div>
       <p className='pb-3 mt-12 font-medium text-zinc-700 border-b'>My Appointments</p>
       <div>
-        {/* slice hiển thị số người muốn hiển thị bắt đầu người thứ nhất đến n (), 3(4,5,...) */}
-        {appointments.slice(0, 3).map((item, index) => (
+        {/* Hiển thị 3 mục đầu tiên nếu showAll = false, nếu không thì hiển thị toàn bộ */}
+        {(showAll ? appointments : appointments.slice(0, 3)).map((item, index) => (
           <div className='grid grid-cols-[1fr_2fr] gap-4 sm:flex sm:gap-6 py-2 border-b' key={index}>
             <div>
               <img className='w-32 bg-indigo-50' src={item.docData.image} alt="" />
@@ -141,6 +140,15 @@ const MyAppointments = () => {
           </div>
         ))}
       </div>
+      {/* Nút "Xem thêm" hoặc "Thu gọn" */}
+      <div className='mt-4'>
+        <button
+          onClick={() => setShowAll(!showAll)}
+          className='btn btn-outline-primary rounded-pill px-4 py-2 shadow-sm border rounded hover:bg-red-600 hover:text-white'>
+          {showAll ? 'Thu gọn' : 'Xem thêm'}
+        </button>
+      </div>
+
     </div>
   )
 }

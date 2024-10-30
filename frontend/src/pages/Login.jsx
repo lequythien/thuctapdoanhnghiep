@@ -23,7 +23,7 @@ const Login = () => {
 
       if (state === 'Sign Up') {
 
-        const { data } = await axios.post(`${backendUrl}/api/user/register`, { name, password, email })
+        const { data } = await axios.post(`${backendUrl}/api/user/register`, { name, email, password })
         if (data.success) {
           toast.success("Registration successful. Please log in.")
           setState('Login')    // Switch to login view

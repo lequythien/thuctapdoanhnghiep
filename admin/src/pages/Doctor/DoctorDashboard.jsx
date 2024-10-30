@@ -4,7 +4,7 @@ import { assets } from '../../assets/assets'
 import { AppContext } from '../../context/AppContext'
 
 const DoctorDashboard = () => {
-
+  
   const { dToken, dashData, setDashData, getDashData, completeAppointment, cancelAppointment } = useContext(DoctorContext)
   const { currency, slotDateFormat } = useContext(AppContext)
 
@@ -13,6 +13,18 @@ const DoctorDashboard = () => {
       getDashData()
     }
   }, [dToken])
+
+  // Hàm hoàn thành cuộc hẹn có cập nhật lại dữ liệu
+  const handleCompleteAppointment = async (appointmentId) => {
+    await completeAppointment(appointmentId)
+    getDashData()  // Gọi lại hàm để cập nhật dữ liệu mới nhất
+  }
+
+  // Hàm hủy cuộc hẹn có cập nhật lại dữ liệu
+  const handleCancelAppointment = async (appointmentId) => {
+    await cancelAppointment(appointmentId)
+    getDashData()  // Gọi lại hàm để cập nhật dữ liệu mới nhất
+  }
 
   return dashData && (
     <div className='m-5'>
@@ -55,7 +67,7 @@ const DoctorDashboard = () => {
           {
             dashData.latestAppointments.map((item, index) => (
               <div className='flex items-center px-6 py-3 gap-3 hover:bg-gray-100' key={index}>
-                <img className='rounded-full w-10' src={item.userData.image} alt="" />
+                <img className='rounded-full w-10 h-10 object-cover' src={item.userData.image} alt="" />
                 <div className='flex-1 text-sm'>
                   <p className='text-gray-800 font-medium'>{item.userData.name}</p>
                   <p className='text-gray-600'>{slotDateFormat(item.slotDate)}</p>
@@ -66,8 +78,8 @@ const DoctorDashboard = () => {
                     : item.isCompleted
                       ? <p className='text-green-500 text-xs font-medium'>Completed</p>
                       : <div className='flex'>
-                        <img onClick={() => cancelAppointment(item._id)} className='w-10 cursor-pointer' src={assets.cancel_icon} alt="" />
-                        <img onClick={() => completeAppointment(item._id)} className='w-10 cursor-pointer' src={assets.tick_icon} alt="" />
+                        <img onClick={() => handleCancelAppointment(item._id)} className='w-10 cursor-pointer' src={assets.cancel_icon} alt="" />
+                        <img onClick={() => handleCompleteAppointment(item._id)} className='w-10 cursor-pointer' src={assets.tick_icon} alt="" />
                       </div>
                 }
               </div>

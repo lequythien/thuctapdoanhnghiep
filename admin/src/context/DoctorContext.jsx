@@ -16,7 +16,7 @@ const DoctorContextProvider = (props) => {
     const getAppointments = async () => {
         try {
 
-            const { data } = await axios.get(backendUrl + '/api/doctor/appointments', { headers: { dToken } })
+            const { data } = await axios.get(`${backendUrl}/api/doctor/appointments`, { headers: { dToken } })
             if (data.success) {
                 setAppointments(data.appointments)
                 console.log(data.appointments)
@@ -34,7 +34,7 @@ const DoctorContextProvider = (props) => {
 
         try {
 
-            const { data } = await axios.post(backendUrl + '/api/doctor/complete-appointment', { appointmentId }, { headers: { dToken } })
+            const { data } = await axios.post(`${backendUrl}/api/doctor/complete-appointment`, { appointmentId }, { headers: { dToken } })
             if (data.success) {
                 toast.success(data.message)
                 getAppointments()
@@ -53,7 +53,7 @@ const DoctorContextProvider = (props) => {
 
         try {
 
-            const { data } = await axios.post(backendUrl + '/api/doctor/cancel-appointment', { appointmentId }, { headers: { dToken } })
+            const { data } = await axios.post(`${backendUrl}/api/doctor/cancel-appointment`, { appointmentId }, { headers: { dToken } })
             if (data.success) {
                 toast.success(data.message)
                 getAppointments()
@@ -71,7 +71,7 @@ const DoctorContextProvider = (props) => {
     const getDashData = async () => {
         try {
 
-            const { data } = await axios.get(backendUrl + '/api/doctor/dashboard', { headers: { dToken } })
+            const { data } = await axios.get(`${backendUrl}/api/doctor/dashboard`, { headers: { dToken } })
             if (data.success) {
                 setDashData(data.dashData)
                 console.log(data.dashData)
@@ -89,7 +89,7 @@ const DoctorContextProvider = (props) => {
 
         try {
 
-            const { data } = await axios.get(backendUrl + '/api/doctor/profile', { headers: { dToken } })
+            const { data } = await axios.get(`${backendUrl}/api/doctor/profile`, { headers: { dToken } })
             if (data.success) {
                 setProfileData(data.profileData)
                 console.log(data.profileData)

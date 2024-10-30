@@ -28,6 +28,7 @@ const Login = () => {
                     localStorage.setItem('aToken', response.data.token)
                     toast.success("Admin logged in successfully!")
                     navigate('/admin-dashboard') // Redirect to Admin Dashboard
+                    window.location.reload() // Reload the page
                 } else {
                     toast.error(response.data.message || "Admin login failed.")
                 }
@@ -39,6 +40,7 @@ const Login = () => {
                     setDToken(response.data.token)
                     toast.success("Doctor logged in successfully!")
                     navigate('/doctor-dashboard') // Redirect to Doctor Dashboard
+                    window.location.reload() // Reload the page
                 } else {
                     toast.error(response.data.message || "Doctor login failed.")
                 }
